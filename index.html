@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Task Manager</h1>
+    </header>
+    <main>
+      <div class="task-input">
+        <input type="text" id="task-desc" placeholder="New task..." />
+        <input type="date" id="task-due-date" />
+        <button id="add-task-btn">Add Task</button>
+      </div>
+      <div class="task-controls">
+        <div class="filter-btns">
+          <button id="show-all-btn" class="active">All</button>
+          <button id="show-completed-btn">Completed</button>
+          <button id="show-active-btn">Active</button>
+        </div>
+        <div class="sort-btn-container">
+          <button id="sort-by-date-btn">Sort by Due Date</button>
+        </div>
+      </div>
+      <ul id="task-list"></ul>
+    </main>
+    <footer>
+      <p>© 2025 Rotem Aharon</p>
+    </footer>
+  </body>
+</html>
