@@ -13,10 +13,14 @@
     </header>
     <main>
       <div class="task-input">
-        <input type="text" id="task-desc" placeholder="New task..." />
-        <input type="date" id="task-due-date" placeholder="Choose Date..."/>
-        <button id="add-task-btn">Add Task</button>
-      </div>
+  <input type="text" id="task-desc" placeholder="New task..." />
+  
+  <div class="date-input-container">
+    <label for="task-due-date">Choose Date:</label>
+    <input type="date" id="task-due-date" />
+  </div>
+  <button id="add-task-btn">Add Task</button>
+</div>
       <div class="task-controls">
         <div class="filter-btns">
           <button id="show-all-btn" class="active">All</button>
