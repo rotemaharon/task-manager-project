@@ -17,7 +17,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-image: url(bg.jpg);
+  background-image: url(./img/bg.jpg);
   color: var(--text-secondary);
   direction: ltr;
   padding: 2rem;
