@@ -11,11 +11,11 @@ const sortByDateBtn = document.getElementById("sort-by-date-btn");
 let tasks = [];
 let currentFilter = "all";
 
-// localStorage
+// שמירה ל-localStorage
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
-
+// שליפה מ-localStorage
 function getTasks() {
   const storedTasks = localStorage.getItem("tasks");
   if (storedTasks) {
@@ -24,7 +24,7 @@ function getTasks() {
     tasks = [];
   }
 }
-
+// סינון משימות לפי מצב
 function filterTasks(tasksToFilter) {
   if (currentFilter === "completed") {
     return tasksToFilter.filter((task) => task.completed);
@@ -57,7 +57,7 @@ function renderTasks() {
         <button class="delete" data-id="${task.id}">Delete</button>
       </div>
     `;
-
+  
     const completeBtn = li.querySelector(".complete");
     const deleteBtn = li.querySelector(".delete");
 
