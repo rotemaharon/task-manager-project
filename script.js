@@ -11,11 +11,10 @@ const sortByDateBtn = document.getElementById("sort-by-date-btn");
 let tasks = [];
 let currentFilter = "all";
 
-// שמירה ל-localStorage
-function saveTasks() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+function saveTasks(tasksToSave) {
+  localStorage.setItem("tasks", JSON.stringify(tasksToSave));
 }
-// שליפה מ-localStorage
+
 function getTasks() {
   const storedTasks = localStorage.getItem("tasks");
   if (storedTasks) {
@@ -24,19 +23,52 @@ function getTasks() {
     tasks = [];
   }
 }
-// סינון משימות לפי מצב
-function filterTasks(tasksToFilter) {
-  if (currentFilter === "completed") {
+
+function filterTasks(tasksToFilter, filterType) {
+  if (filterType === "completed") {
     return tasksToFilter.filter((task) => task.completed);
-  } else if (currentFilter === "active") {
+  } else if (filterType === "active") {
     return tasksToFilter.filter((task) => !task.completed);
   }
   return tasksToFilter;
 }
 
+function sortTasks(tasksToSort) {
+  tasksToSort.sort((a, b) => {
+    const dateA = a.dueDate || "9999-12-31";
+    const dateB = b.dueDate || "9999-12-31";
+    return new Date(dateA) - new Date(dateB);
+  });
+}
+
+function addTask() {
+  const text = taskDescInput.value.trim();
+  const dueDate = taskDateInput.value;
+
+  if (text === "") {
+    alert("Please enter a task.");
+    return;
+  }
+
+  const newTask = {
+    id: Date.now(),
+    text,
+    dueDate,
+    completed: false,
+  };
+
+  tasks.push(newTask);
+  saveTasks(tasks); // שליחת tasks כפרמטר
+  renderTasks();
+
+  taskDescInput.value = "";
+  taskDateInput.value = "";
+}
+
 function renderTasks() {
   taskList.innerHTML = "";
-  const filteredTasks = filterTasks(tasks);
+  // שליחת currentFilter כפרמטר
+  const filteredTasks = filterTasks(tasks, currentFilter);
 
   filteredTasks.forEach((task) => {
     const li = document.createElement("li");
@@ -57,7 +89,7 @@ function renderTasks() {
         <button class="delete" data-id="${task.id}">Delete</button>
       </div>
     `;
-  
+
     const completeBtn = li.querySelector(".complete");
     const deleteBtn = li.querySelector(".delete");
 
@@ -66,7 +98,7 @@ function renderTasks() {
       const taskToToggle = tasks.find((t) => t.id === taskId);
       if (taskToToggle) {
         taskToToggle.completed = !taskToToggle.completed;
-        saveTasks();
+        saveTasks(tasks); // שליחת tasks כפרמטר
         renderTasks();
       }
     });
@@ -74,7 +106,7 @@ function renderTasks() {
     deleteBtn.addEventListener("click", () => {
       const taskId = parseInt(deleteBtn.dataset.id);
       tasks = tasks.filter((t) => t.id !== taskId);
-      saveTasks();
+      saveTasks(tasks); // שליחת tasks כפרמטר
       renderTasks();
     });
 
@@ -82,32 +114,9 @@ function renderTasks() {
   });
 }
 
-// הוספת משימה
-addTaskBtn.addEventListener("click", () => {
-  const text = taskDescInput.value.trim();
-  const dueDate = taskDateInput.value;
+// חיבור כפתור הוספה לפונקציה החדשה
+addTaskBtn.addEventListener("click", addTask);
 
-  if (text === "") {
-    alert("Please enter a task.");
-    return;
-  }
-
-  const newTask = {
-    id: Date.now(),
-    text,
-    dueDate,
-    completed: false,
-  };
-
-  tasks.push(newTask);
-  saveTasks();
-  renderTasks();
-
-  taskDescInput.value = "";
-  taskDateInput.value = "";
-});
-
-// סינון משימות
 function updateFilterButtons(selectedBtnId) {
   const buttons = [showAllBtn, showCompletedBtn, showActiveBtn];
   buttons.forEach((btn) => btn.classList.remove("active"));
@@ -132,18 +141,13 @@ showActiveBtn.addEventListener("click", () => {
   renderTasks();
 });
 
-// מיון משימות לפי תאריך
+// חיבור כפתור המיון לפונקציה החדשה
 sortByDateBtn.addEventListener("click", () => {
-  tasks.sort((a, b) => {
-    const dateA = a.dueDate || "9999-12-31";
-    const dateB = b.dueDate || "9999-12-31";
-    return new Date(dateA) - new Date(dateB);
-  });
-  saveTasks();
+  sortTasks(tasks);
+  saveTasks(tasks); // שליחת tasks כפרמטר
   renderTasks();
 });
 
-// טעינת משימות מ-API
 async function fetchInitialTasks() {
   try {
     const response = await fetch(
@@ -161,7 +165,7 @@ async function fetchInitialTasks() {
     }));
 
     tasks = tasks.concat(newTasks);
-    saveTasks();
+    saveTasks(tasks); // שליחת tasks כפרמטר
     renderTasks();
   } catch (error) {
     console.error(error);
@@ -169,7 +173,6 @@ async function fetchInitialTasks() {
   }
 }
 
-// טעינה ראשונית
 document.addEventListener("DOMContentLoaded", () => {
   getTasks();
   if (tasks.length === 0) {
