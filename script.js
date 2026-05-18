@@ -66,10 +66,11 @@ function filterTasks(tasks, filter) {
 }
 
 /**
- * Sorts tasks chronologically by due date.
+ * Sorts tasks chronologically by due date (returns a sorted copy).
  */
 function sortTasks(tasks) {
-  return tasks.sort((a, b) => {
+  // Using spread operator [...] to avoid mutating the original array directly
+  return [...tasks].sort((a, b) => {
     const dateA = a.dueDate || "9999-12-31";
     const dateB = b.dueDate || "9999-12-31";
     return new Date(dateA) - new Date(dateB);
@@ -166,7 +167,8 @@ async function fetchInitialTasks() {
       "https://jsonplaceholder.typicode.com/todos?_limit=5",
     );
 
-    if (response.status !== 200) {
+    // Using response.ok as best practice to check for successful status codes (2xx)
+    if (!response.ok) {
       throw new Error(
         "Failed to fetch data from API. Status: " + response.status,
       );
