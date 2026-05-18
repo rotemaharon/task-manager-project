@@ -15,8 +15,7 @@ let currentFilter = "all";
 // --- Utility Functions ---
 
 /**
- * Escapes HTML characters to prevent XSS (Cross-Site Scripting) attacks.
- * PRO TIP for LinkedIn: Shows you care about security!
+ * Escapes HTML characters to prevent XSS vulnerabilities.
  */
 function escapeHTML(str) {
   return str.replace(/[&<>'"]/g, tag => ({
@@ -30,7 +29,6 @@ function escapeHTML(str) {
 
 /**
  * Saves the tasks array to localStorage.
- * Matches Spec: saveTasks(tasks)
  */
 function saveTasks(tasks) {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -49,8 +47,7 @@ function getTasks() {
 }
 
 /**
- * Filters tasks based on the given filter string.
- * Matches Spec: filterTasks(tasks, filter)
+ * Filters tasks based on the given filter status.
  */
 function filterTasks(tasks, filter) {
   switch (filter) {
@@ -65,8 +62,7 @@ function filterTasks(tasks, filter) {
 }
 
 /**
- * Sorts tasks by due date and RETURNS the sorted array.
- * Matches Spec: sortTasks(tasks) - Returns sorted array.
+ * Sorts tasks chronologically by due date.
  */
 function sortTasks(tasks) {
   return tasks.sort((a, b) => {
@@ -101,13 +97,12 @@ function addTask() {
   saveTasks(tasks);
   renderTasks();
 
-  // Clear inputs
   taskDescInput.value = "";
   taskDateInput.value = "";
 }
 
 /**
- * Renders the task list to the DOM based on current filters.
+ * Renders the task list to the DOM based on active filters.
  */
 function renderTasks() {
   taskList.innerHTML = "";
@@ -121,7 +116,6 @@ function renderTasks() {
       li.classList.add("completed");
     }
 
-    // Using escapeHTML for task.text to ensure security
     li.innerHTML = `
       <span>
         <div class="task-title">${escapeHTML(task.text)}</div>
@@ -133,7 +127,6 @@ function renderTasks() {
       </div>
     `;
 
-    // Matches Spec: Add event listeners during creation and use event.target.dataset.id
     const completeBtn = li.querySelector(".complete");
     const deleteBtn = li.querySelector(".delete");
 
@@ -161,20 +154,18 @@ function renderTasks() {
 // --- API Integration ---
 
 /**
- * Fetches initial tasks from an external API if localStorage is empty.
+ * Fetches initial dummy tasks from an external API.
  */
 async function fetchInitialTasks() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=5");
     
-    // Matches Spec: Ensure status is 200 before proceeding
     if (response.status !== 200) {
       throw new Error("Failed to fetch data from API. Status: " + response.status);
     }
     
     const apiTasks = await response.json();
     
-    // Convert API data structure to match our app structure
     const newTasks = apiTasks.map((item) => ({
       id: item.id,
       text: item.title,
@@ -220,7 +211,6 @@ showActiveBtn.addEventListener("click", () => {
 });
 
 sortByDateBtn.addEventListener("click", () => {
-  // Re-assign tasks to the sorted array returned by sortTasks
   tasks = sortTasks(tasks);
   saveTasks(tasks);
   renderTasks();
