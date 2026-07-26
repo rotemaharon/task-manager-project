@@ -1,4 +1,5 @@
 # Task Manager Application
+https://task-manager-project-ecru.vercel.app/
 
 A responsive web application built for managing daily tasks. This project demonstrates core competencies in front-end development, DOM manipulation, asynchronous data fetching, and local data persistence.
 
